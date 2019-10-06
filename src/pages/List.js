@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, AsyncStorage, StyleSheet,  Image } from 'react-native';
+import { SafeAreaView, ScrollView, AsyncStorage, StyleSheet,  Image, Alert } from 'react-native';
+import socketio from 'socket.io-client';
 
 import SpotList from '../components/SpotList';
+
 
 import logo from '../assets/logo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -16,6 +18,23 @@ export default function List({ navigation }) {
             setTechs(noDuplicatedArray);
         })
     },[])
+
+    useEffect(()=>{
+        AsyncStorage.getItem('user').then(user_id=>{
+            const socket = socketio('http://192.168.25.126:3333',{
+                query:{ user_id }
+            })
+            socket.on('booking_response', booking =>{
+                Alert.alert(`Sua reserva em ${booking.spot.company} em ${booking.date} foi ${booking.approved? 'APROVADA':'REJEITADA'} `)
+            })
+        })
+
+    },[]);
+
+    function logout() {
+        AsyncStorage.clear();
+        navigation.navigate('Login');
+    }
 
     return (
         <SafeAreaView style={styles.container}>
