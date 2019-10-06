@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {SafeAreaView, AsyncStorage, StyleSheet,  Image} from 'react-native';
+import { SafeAreaView, ScrollView, AsyncStorage, StyleSheet,  Image } from 'react-native';
 
 import SpotList from '../components/SpotList';
 
 import logo from '../assets/logo.png';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function List() {
+export default function List({ navigation }) {
     const [techs, setTechs] = useState([]);
 
     useEffect(()=>{
@@ -17,11 +18,13 @@ export default function List() {
     },[])
 
     return (
-        <SafeAreaView>
-            <Image style={styles.logo} source={logo}/>
-            {techs.map(tech=>(
-                <SpotList key={tech} tech={tech}></SpotList>
-            ))}
+        <SafeAreaView style={styles.container}>
+            <TouchableOpacity  onPress={()=>logout()}>
+                <Image style={styles.logo} source={logo}/>
+            </TouchableOpacity>
+            <ScrollView>
+                {techs.map(tech=>(<SpotList key={tech} tech={tech}></SpotList>))}
+            </ScrollView>
         </SafeAreaView>
     )
 }
